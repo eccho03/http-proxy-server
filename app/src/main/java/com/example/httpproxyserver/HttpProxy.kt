@@ -1,5 +1,4 @@
-package :
-        q
+package com.example.httpproxyserver
 
 
 import android.util.Log
@@ -10,7 +9,7 @@ import java.util.concurrent.Executors
 import java.util.regex.Pattern
 
 
-const val TAG = "HttpProxy"
+const val TAG = "com.example.httpproxyserver.HttpProxy"
 
 val executorService: ExecutorService = Executors.newCachedThreadPool()
 val connectPattern: Pattern =
@@ -113,12 +112,17 @@ class RequestHandler(private val socket: Socket) : Runnable {
                 writer.write("HTTP/$version 502 Bad Gateway\r\n")
                 writer.write("\r\n")
                 writer.flush()
+
+                Log.d(TAG, "HTTP/$version 502 Bad Gateway")
                 socket.close()
                 return
             }
+
             writer.write("HTTP/$version 200 Connection established\r\n")
             writer.write("\r\n")
             writer.flush()
+
+            Log.d(TAG, "response: HTTP/$version 200 Connection established")
             val latch = CountDownLatch(1)
             executorService.submit {
                 try {
